@@ -18,14 +18,19 @@ import androidx.compose.ui.unit.dp
 import dev.haas.vakya.composables.Book
 import dev.haas.vakya.composables.ExpressiveBottomNav
 import dev.haas.vakya.composables.Library_books
+import dev.haas.vakya.images.ImageInputViewModel
+import dev.haas.vakya.images.ImageInputViewModel.imageBytes
+import dev.haas.vakya.images.ReceiveScreenshot
 import dev.haas.vakya.screens.HomeScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
-@Preview
-fun App() {
-    MaterialTheme {
-            HomeScreen()
+fun App(){
+    val imageBytes by ImageInputViewModel.imageBytes.collectAsState()
+    if (imageBytes == null) {
+        Text("No screenshot received")
+    } else {
+        Text("Screenshot received: ${imageBytes!!.size} bytes")
     }
 }
