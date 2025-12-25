@@ -4,6 +4,7 @@ import dev.haas.vakya.common.OcrEngine
 import dev.haas.vakya.common.ScreenShotProcessor
 import dev.haas.vakya.models.Note
 import dev.haas.vakya.models.NoteType
+import kotlin.math.log
 import kotlin.random.Random
 
 class DefaultScreenShotProcesser(private val ocrEngine: OcrEngine): ScreenShotProcessor {
