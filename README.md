@@ -64,14 +64,14 @@ interface ScreenshotProcessor {
 
 Checklist:
 
-* [ ] Define pipeline stages:
+* [ x ] Define pipeline stages:
 
   * OCR
   * Cleanup
   * Summarization
   * Classification
   * Date extraction
-* [ ] Output → `Note` model (already exists)
+* [ x ] Output → `Note` model (already exists)
 
 ---
 
