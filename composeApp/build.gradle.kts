@@ -32,6 +32,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.text.recognition)
             implementation(libs.tensorflow.lite)
+            implementation ("com.google.mediapipe:tasks-genai:0.10.27")
         }
         commonMain.dependencies {
             implementation(compose.runtime)

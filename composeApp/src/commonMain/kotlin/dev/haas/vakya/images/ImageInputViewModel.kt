@@ -25,14 +25,15 @@ object ImageInputViewModel  {
     val note = _note.asStateFlow()
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun onImageReceived(bytes: ByteArray) {
+    fun onImageReceived(bytes: ByteArray,llmInference: Any) {
         _imageBytes.value = bytes
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         scope.launch {
 
             val generatedNote = processor.processScreenshot(
                 imageBytes = bytes,
-                createdAt = 1000L
+                createdAt = 1000L,
+                llmInference = llmInference
             )
             _note.value = generatedNote
             println("generated note $generatedNote")

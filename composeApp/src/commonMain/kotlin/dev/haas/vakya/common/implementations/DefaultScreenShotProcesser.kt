@@ -2,7 +2,7 @@ package dev.haas.vakya.common.implementations
 
 import dev.haas.vakya.common.OcrEngine
 import dev.haas.vakya.common.ScreenShotProcessor
-import dev.haas.vakya.common.SentenceScorer
+import dev.haas.vakya.common.SentenceSummarizer
 import dev.haas.vakya.models.Note
 import dev.haas.vakya.models.NoteType
 import kotlin.random.Random
@@ -13,19 +13,17 @@ class DefaultScreenShotProcesser(
 
     override suspend fun processScreenshot(
         imageBytes: ByteArray,
-        createdAt: Long
+        createdAt: Long,
+        llmInference: Any
     ): Note {
 
         val rawText = ocrEngine.extractText(imageBytes)
         val cleaned = rawText.trim()
         require(cleaned.length >= 10)
 
-        val scorer = SentenceScorer()
-        val summary = scorer.summarize(cleaned)
-
         return Note(
             id = Random.nextInt().toString(),
-            content = "$summary\n\n---\n\n$cleaned",
+            content = "$cleaned",
             type = NoteType.Note,
             targetBucket = "Inbox",
             createdAt = createdAt

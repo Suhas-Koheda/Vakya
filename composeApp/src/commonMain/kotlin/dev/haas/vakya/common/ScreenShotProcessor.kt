@@ -5,6 +5,7 @@ import dev.haas.vakya.models.Note
 interface ScreenShotProcessor {
     suspend fun processScreenshot(
         imageBytes: ByteArray,
-        createdAt: Long
+        createdAt: Long,
+        llmInference: Any
     ): Note
 }
