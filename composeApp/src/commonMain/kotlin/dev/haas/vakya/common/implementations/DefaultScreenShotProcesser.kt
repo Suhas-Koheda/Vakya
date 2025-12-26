@@ -25,7 +25,7 @@ class DefaultScreenShotProcesser(
 
         return Note(
             id = Random.nextInt().toString(),
-            content = summary,          // ✅ USE SUMMARY
+            content = "$summary\n\n---\n\n$cleaned",
             type = NoteType.Note,
             targetBucket = "Inbox",
             createdAt = createdAt
