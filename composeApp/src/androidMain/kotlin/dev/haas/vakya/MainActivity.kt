@@ -8,20 +8,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
-import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import dev.haas.vakya.images.ImageInputViewModel
 import dev.haas.vakya.images.ReceiveScreenshot
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    val taskOptions= LlmInference.LlmInferenceOptions.builder()
-        .setModelPath("/data/local/tmp/llm/gemma3-1b-it-int4.task")
-        .setMaxTopK(64)
-        .build()
-    val llmInference= LlmInference.createFromOptions(this.applicationContext,taskOptions)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        AppContextHolder.init(application)
         setContent {
             App()
         }
@@ -42,7 +38,7 @@ class MainActivity : ComponentActivity() {
             val bytes = receiver.receiveImageBytes()
             Log.d("Vakya", "Image bytes size = ${bytes?.size}")
             if (bytes != null) {
-                ImageInputViewModel.onImageReceived(bytes,llmInference)
+                ImageInputViewModel.onImageReceived(bytes)
             }
         }
     }

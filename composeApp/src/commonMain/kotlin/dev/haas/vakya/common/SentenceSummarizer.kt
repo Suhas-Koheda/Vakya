@@ -1,6 +1,6 @@
 package dev.haas.vakya.common
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-expect class SentenceSummarizer {
+expect object SentenceSummarizer {
     fun summarize(text:String):String
 }

@@ -10,20 +10,17 @@ import kotlin.random.Random
 class DefaultScreenShotProcesser(
     private val ocrEngine: OcrEngine
 ) : ScreenShotProcessor {
-
     override suspend fun processScreenshot(
         imageBytes: ByteArray,
         createdAt: Long,
-        llmInference: Any
     ): Note {
 
         val rawText = ocrEngine.extractText(imageBytes)
-        val cleaned = rawText.trim()
-        require(cleaned.length >= 10)
-
+        val summarizedText= SentenceSummarizer.summarize(rawText)
+        require(summarizedText.length >= 10)
         return Note(
             id = Random.nextInt().toString(),
-            content = "$cleaned",
+            content = summarizedText,
             type = NoteType.Note,
             targetBucket = "Inbox",
             createdAt = createdAt
