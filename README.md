@@ -1,5 +1,7 @@
 # Vakya — Screenshot Intelligence (Cross-Platform Checklist)
 
+Vakya is a cross-platform application for Android and iOS that intelligently processes screenshots. Users can share or import screenshots into the app, which then extracts text, summarizes the content, classifies it as a task, idea, or note, and optionally extracts a date. This structured information is then saved as a note, turning ephemeral screenshots into actionable information. The core logic is shared between platforms, with platform-specific implementations for UI and screenshot import.
+
 > **Important constraint (locked):**
 > ❌ No automatic screenshot detection
 > ✅ User-driven screenshot import / share
@@ -64,14 +66,14 @@ interface ScreenshotProcessor {
 
 Checklist:
 
-* [ x ] Define pipeline stages:
+* [x] Define pipeline stages:
 
   * OCR
   * Cleanup
   * Summarization
   * Classification
   * Date extraction
-* [ x ] Output → `Note` model (already exists)
+* [x] Output → `Note` model (already exists)
 
 ---
 
@@ -212,13 +214,13 @@ This prevents junk notes.
 
 ### Android
 
-* [ ] READ_MEDIA_IMAGES (Android 13+)
-* [ ] No background permissions
-* [ ] No internet permission
+* [x] READ_MEDIA_IMAGES (Android 13+)
+* [x] No background permissions
+* [x] No internet permission
 
 ### iOS
 
-* [ ] Photo Library usage description
+* [x] Photo Library usage description
 * [ ] Share extension entitlement
 
 ---
@@ -229,11 +231,9 @@ You can confidently say:
 
 > “Vakya processes screenshots **fully offline**, extracts meaning, and converts them into structured tasks or notes — on both Android and iOS.”
 
-That is **portfolio-grade**.
-
 ---
 
-## What You Must NOT Attempt (Yet)
+## What I am NOT Attempting (Yet)
 
 ❌ Auto screenshot detection
 ❌ Background listeners
@@ -242,16 +242,3 @@ That is **portfolio-grade**.
 
 Those break iOS parity.
 
----
-
-## Recommended Next Concrete Step (Do This Now)
-
-👉 **Implement Phase 1 + Phase 2 only**
-
-* Screenshot share/import
-* Stub OCR (return fake text)
-* Full pipeline wiring
-
-Once that works, OCR drops in cleanly.
-
----
