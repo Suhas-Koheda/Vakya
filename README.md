@@ -6,13 +6,6 @@ Vakya is a cross-platform application for Android and iOS that intelligently pro
 > ❌ No automatic screenshot detection
 > ✅ User-driven screenshot import / share
 > ✅ Same core logic on Android & iOS
-
-This is the **only correct cross-platform design**.
-
----
-
-## PHASE 0 — Define the Screenshot Flow (Lock This)
-
 ### Supported user actions
 
 * User:
@@ -29,216 +22,142 @@ This is the **only correct cross-platform design**.
 4. Extract date (optional)
 5. Save as structured note
 
+## Vakya — Screenshot Intelligence (Updated Checklist)
+
+### PHASE 0 — Design constraints (LOCKED)
+
+* [x] No automatic screenshot detection
+* [x] User-driven import / share only
+* [x] Fully offline processing
+* [x] Identical core logic on Android & iOS
+
 ---
 
-## PHASE 1 — Add Image Input Capability
+## PHASE 1 — Image ingestion
 
-### 1.1 Android
+### Android
 
-* [x] Add `ACTION_SEND` intent filter (image/*
-* [x] Accept `content://` URI
-* [x] Read bitmap via ContentResolver
-* [x] Pass image bytes to shared pipeline
+* [x] `ACTION_SEND` intent filter (image/*)
+* [x] Receive `content://` URI
+* [x] Read image via `ContentResolver`
+* [x] Convert to in-memory bytes only
 
-### 1.2 iOS
+### iOS
 
-* [x] Add **Share Extension** (image only)
-* [x] Receive `UIImage`
+* [x] Share extension (UIImage input)
 * [x] Convert to PNG/JPEG bytes
-* [x] Pass bytes to shared pipeline
-
-📌 **Do NOT OCR in platform code**
+* [x] Pass to shared pipeline
 
 ---
 
-## PHASE 2 — Shared Screenshot Pipeline (commonMain)
+## PHASE 2 — Screenshot pipeline (commonMain)
 
-Create this in `commonMain`:
-
-```kotlin
-interface ScreenshotProcessor {
-    suspend fun process(
-        imageBytes: ByteArray,
-        createdAt: Long
-    ): Note
-}
-```
-
-Checklist:
-
-* [x] Define pipeline stages:
-
-  * OCR
-  * Cleanup
-  * Summarization
-  * Classification
-  * Date extraction
-* [x] Output → `Note` model (already exists)
+* [x] `ScreenshotProcessor` abstraction
+* [x] Platform OCR via `OcrEngine`
+* [x] LLM-based interpretation
+* [x] Structured extraction model
+* [x] Suggested actions inference
 
 ---
 
-## PHASE 3 — OCR (Platform-Specific, API-Stable)
+## PHASE 3 — OCR (platform-specific)
 
-### 3.1 Android OCR
+### Android
 
-* [ ] Use **ML Kit Text Recognition (on-device)**
-* [ ] Input: Bitmap
-* [ ] Output: Raw text
-* [ ] Pass text → commonMain
+* [x] ML Kit Text Recognition
+* [ ] Image downscaling before OCR (optimization)
 
-### 3.2 iOS OCR
+### iOS
 
-* [ ] Use **Vision.framework (VNRecognizeTextRequest)**
-* [ ] Input: UIImage
-* [ ] Output: Raw text
-* [ ] Pass text → commonMain
-
-📌 OCR is the **only platform-divergent ML**
+* [ ] Vision.framework OCR
 
 ---
 
-## PHASE 4 — Text Normalization (commonMain)
+## PHASE 4 — Text normalization
 
-* [ ] Remove junk:
-
-  * Status bar text
-  * Repeated whitespace
-* [ ] Preserve structure:
-
-  * Newlines
-  * Bullet points
-* [ ] Reject OCR if:
-
-  * < 10 characters
-  * Garbage confidence
+* [ ] Remove status bar / junk text
+* [ ] Normalize whitespace
+* [ ] Reject garbage OCR
+* [ ] Limit max lines before LLM
 
 ---
 
-## PHASE 5 — Screenshot Summarization (commonMain)
+## PHASE 5 — Screenshot interpretation
 
-### Phase-1 (Rule-Based)
-
-* [ ] Take top meaningful lines
-* [ ] Max 3 bullets
-* [ ] Max 60 words
-* [ ] Ignore:
-
-  * App chrome
-  * Repeated UI text
-
-Later:
-
-* Swap with on-device LLM
+* [x] Summary extraction
+* [x] Link extraction
+* [x] Question extraction
+* [x] Todo extraction
+* [ ] Replace string parsing with structured interpreter
 
 ---
 
-## PHASE 6 — Classification (Reuse Your Existing Models)
+## PHASE 6 — User intent layer (CRITICAL)
 
-You already have:
-
-* `ClassificationInput`
-* `ClassificationOutput`
-* `NoteType`
-
-Checklist:
-
-* [ ] Feed OCR text
-* [ ] Predict:
-
-  * Task → has date / imperative verb
-  * Idea → exploratory language
-  * Note → default
-* [ ] Confidence score
+* [x] `ScreenshotAction` sealed model
+* [x] Suggested actions generation
+* [ ] Rank actions by relevance
+* [ ] Multi-select actions
 
 ---
 
-## PHASE 7 — Date & Event Extraction
+## PHASE 7 — Confirmation UI
 
-* [ ] Regex-based extraction:
-
-  * Today / Tomorrow
-  * dd/mm/yyyy
-  * “by Friday”
-* [ ] Normalize timestamp
-* [ ] Store as `targetDate`
+* [x] Preview summary
+* [ ] Preview image
+* [ ] Allow text clipping
+* [ ] Allow action selection
+* [ ] Choose storage policy
 
 ---
 
-## PHASE 8 — User Confirmation UI (Critical)
+## PHASE 8 — Note creation (explicit only)
 
-Before saving:
+* [ ] Create `Note` from user-selected content
+* [ ] Attach `TextClip`s
+* [ ] Assign bucket
+* [ ] Assign type
+* [ ] Assign date (if detected)
 
-* [ ] Show:
-
-  * Screenshot preview
-  * Summary
-  * Detected type
-  * Detected date
-* [ ] Allow:
-
-  * Edit text
-  * Change type
-  * Change bucket
-* [ ] Confirm → save
-
-This prevents junk notes.
+🚫 Never auto-create notes
 
 ---
 
-## PHASE 9 — Persistence
+## PHASE 9 — Image storage
 
-* [ ] Save note via repository
-* [ ] Store:
+* [ ] Implement `ScreenshotStorage` (expect/actual)
+* [ ] Support:
 
-  * OCR text
-  * Summary
-  * Screenshot URI (platform-local)
-* [ ] Do NOT duplicate image bytes
+  * DISCARD
+  * KEEP_LOCALLY
+  * ATTACH_TO_NOTE
+* [ ] Persist only after confirmation
 
 ---
 
-## PHASE 10 — Screens Integration
+## PHASE 10 — Persistence & browsing
 
-### Notes Screen
-
-* [ ] Screenshot badge/icon
-* [ ] Tap → show image + extracted content
-
-### Buckets Screen
-
+* [ ] Notes repository
+* [ ] Screenshot badge in notes list
+* [ ] Screenshot preview screen
 * [ ] Filter screenshot-based notes
 
 ---
 
-## PHASE 11 — Permissions Checklist
+## PHASE 11 — Optimizations
 
-### Android
-
-* [x] READ_MEDIA_IMAGES (Android 13+)
-* [x] No background permissions
-* [x] No internet permission
-
-### iOS
-
-* [x] Photo Library usage description
-* [ ] Share extension entitlement
+* [ ] Remove raw `ByteArray` from StateFlow
+* [ ] Deterministic ID & time providers
+* [ ] OCR image scaling
+* [ ] Structured LLM output
+* [ ] Field-level confidence scores
 
 ---
 
-## PHASE 12 — What This Gives You (Important)
+## PHASE 12 — Explicit non-goals (for now)
 
-You can confidently say:
-
-> “Vakya processes screenshots **fully offline**, extracts meaning, and converts them into structured tasks or notes — on both Android and iOS.”
-
----
-
-## What I am NOT Attempting (Yet)
-
-❌ Auto screenshot detection
-❌ Background listeners
-❌ Calendar auto-add
-❌ Always-on services
-
-Those break iOS parity.
-
+* ❌ Auto screenshot detection
+* ❌ Background listeners
+* ❌ Calendar auto-insertion
+* ❌ Cloud AI
+* ❌ Always-on services
