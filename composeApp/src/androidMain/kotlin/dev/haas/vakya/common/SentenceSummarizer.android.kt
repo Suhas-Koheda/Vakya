@@ -16,9 +16,29 @@ actual object SentenceSummarizer {
                 text.take(MAX_INPUT_CHARS)
             } else text
 
-        val prompt = """
-Summarize the following text in 3 bullet points.
-Keep it under 60 words.
+        val prompt = """Extract the following from the text:
+
+1. A concise summary (don't add any conversational fluff like "Here's a summary:").
+2. Any links (URLs).
+3. Any questions.
+4. Any to-do items or action items.
+
+Format the output as follows, with each section on a new line and sections separated by '---':
+
+SUMMARY:
+[Your summary here]
+---
+LINKS:
+[Link 1]
+[Link 2]
+---
+QUESTIONS:
+[Question 1]
+[Question 2]
+---
+TODOS:
+[Todo 1]
+[Todo 2]
 
 Text:
 $safeText

@@ -30,15 +30,17 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleShareIntent(intent: Intent) {
-        val uri: Uri? = intent.getParcelableExtra(Intent.EXTRA_STREAM)
-        if (uri == null) return
+        if (intent.action == Intent.ACTION_SEND && intent.type?.startsWith("image/") == true) {
+            val uri: Uri? = intent.getParcelableExtra(Intent.EXTRA_STREAM)
+            if (uri == null) return
 
-        val receiver = ReceiveScreenshot(this, uri)
-        lifecycleScope.launch {
-            val bytes = receiver.receiveImageBytes()
-            Log.d("Vakya", "Image bytes size = ${bytes?.size}")
-            if (bytes != null) {
-                ImageInputViewModel.onImageReceived(bytes)
+            val receiver = ReceiveScreenshot(this, uri)
+            lifecycleScope.launch {
+                val bytes = receiver.receiveImageBytes()
+                Log.d("Vakya", "Image bytes size = ${bytes?.size}")
+                if (bytes != null) {
+                    ImageInputViewModel.onImageReceived(bytes)
+                }
             }
         }
     }

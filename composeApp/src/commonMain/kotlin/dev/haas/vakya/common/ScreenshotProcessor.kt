@@ -1,10 +1,10 @@
 package dev.haas.vakya.common
 
-import dev.haas.vakya.models.Note
+import dev.haas.vakya.models.ScreenshotProcessingResult
 
-interface ScreenShotProcessor {
+interface ScreenshotProcessor {
     suspend fun processScreenshot(
         imageBytes: ByteArray,
         createdAt: Long,
-    ): Note
+    ): ScreenshotProcessingResult
 }
